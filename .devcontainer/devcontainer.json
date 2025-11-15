@@ -23,7 +23,8 @@
 			"extensions": [
 				"jakebecker.elixir-ls",
 				"pantajoe.vscode-elixir-credo",
-				"phoenixframework.phoenix"
+				"phoenixframework.phoenix",
+				"openai.chatgpt"
 			]
 		}
 	}
