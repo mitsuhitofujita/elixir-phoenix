@@ -4,7 +4,7 @@ services:
     build: ./services/elixir
     command: sleep infinity
     environment:
-      DB_HOST: postgres
+      MIX_ENV: dev
     depends_on:
       - postgres
     volumes:
