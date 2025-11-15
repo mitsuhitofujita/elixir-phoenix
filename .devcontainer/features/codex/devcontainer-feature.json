@@ -1,0 +1,7 @@
+{
+	"id": "codex",
+	"version": "0.0.1",
+	"name": "codex",
+	"description": "Adds Codex CLI to the devcontainer",
+	"installsAfter": ["node"]
+}

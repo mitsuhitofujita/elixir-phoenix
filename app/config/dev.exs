@@ -8,6 +8,7 @@ config :app, App.Repo,
   database: "app_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
+  pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10,
   options: [search_path: "main"]
 

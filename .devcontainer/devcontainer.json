@@ -4,6 +4,9 @@
 		"compose.yaml"
 	],
 	"service": "elixir",
+	"features": {
+		"./features/codex": {}
+	},
 	"remoteUser": "vscode",
 	"workspaceFolder": "/workspace",
 	"forwardPorts": [4000],
