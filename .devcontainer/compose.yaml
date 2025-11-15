@@ -19,4 +19,4 @@ services:
     restart: always
     shm_size: 128mb
     volumes:
-      - ./services/postgres/initdb.d/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:ro
+      - ./services/postgres/initdb.sql:/docker-entrypoint-initdb.d/initdb.sql:ro
