@@ -7,6 +7,8 @@ ALTER USER app SET search_path TO main, public;
 ALTER DEFAULT PRIVILEGES FOR USER app IN SCHEMA main GRANT ALL ON TABLES TO app_local;
 ALTER DEFAULT PRIVILEGES FOR USER app IN SCHEMA main GRANT ALL ON SEQUENCES TO app_local;
 
+CREATE EXTENSION IF NOT EXISTS citext SCHEMA main;
+
 -- Create test database for automated testing
 CREATE DATABASE app_test ENCODING 'UTF-8' LC_COLLATE 'C' LC_CTYPE 'C';
 
@@ -23,3 +25,5 @@ ALTER USER app SET search_path TO main, public;
 -- Set default privileges in main schema for app_testing
 ALTER DEFAULT PRIVILEGES FOR USER app IN SCHEMA main GRANT ALL ON TABLES TO app_test;
 ALTER DEFAULT PRIVILEGES FOR USER app IN SCHEMA main GRANT ALL ON SEQUENCES TO app_test;
+
+CREATE EXTENSION IF NOT EXISTS citext SCHEMA main;
