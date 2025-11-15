@@ -6,6 +6,7 @@
 	"service": "elixir",
 	"remoteUser": "vscode",
 	"workspaceFolder": "/workspace",
+	"forwardPorts": [4000],
 	"customizations": {
 		"vscode": {
 			"settings": {
@@ -17,7 +18,9 @@
 				"terminal.integrated.defaultProfile.linux": "bash"
 			},
 			"extensions": [
-				"ms-elixir.elixir"
+				"jakebecker.elixir-ls",
+				"pantajoe.vscode-elixir-credo",
+				"phoenixframework.phoenix"
 			]
 		}
 	}

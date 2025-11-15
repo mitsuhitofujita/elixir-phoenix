@@ -2,13 +2,14 @@ import Config
 
 # Configure your database
 config :app, App.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
+  username: "app",
+  password: "app",
+  hostname: "postgres",
   database: "app_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 10,
+  options: [search_path: "main"]
 
 # For development, we disable any cache and enable
 # debugging and code reloading.

@@ -14,7 +14,7 @@ services:
     environment:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
-      POSTGRES_DB: app_local
+      POSTGRES_DB: app_dev
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
     restart: always
     shm_size: 128mb
