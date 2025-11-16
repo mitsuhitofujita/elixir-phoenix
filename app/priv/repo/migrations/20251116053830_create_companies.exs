@@ -17,6 +17,7 @@ defmodule App.Repo.Migrations.CreateCompanies do
              where: "is_active = true",
              name: :companies_active_code_index
            )
+
     create index(:companies, [:is_active])
   end
 end
