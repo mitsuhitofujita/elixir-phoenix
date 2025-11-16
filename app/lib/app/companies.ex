@@ -7,6 +7,7 @@ defmodule App.Companies do
 
   alias App.Companies.{AuditLog, Company}
   alias App.Repo
+  alias Decimal
   alias Ecto.Multi
 
   @dialyzer {:no_opaque, delete_company: 1}
@@ -95,9 +96,25 @@ defmodule App.Companies do
     |> Map.from_struct()
     |> Map.drop([:__meta__, :__struct__])
     |> Map.new(fn {key, value} ->
-      {Atom.to_string(key), value}
+      {Atom.to_string(key), serialize_value(value)}
     end)
   end
+
+  defp serialize_value(%Decimal{} = value), do: Decimal.to_string(value, :normal)
+  defp serialize_value(%Date{} = value), do: Date.to_iso8601(value)
+  defp serialize_value(%NaiveDateTime{} = value), do: NaiveDateTime.to_iso8601(value)
+  defp serialize_value(%DateTime{} = value), do: DateTime.to_iso8601(value)
+  defp serialize_value(%Time{} = value), do: Time.to_iso8601(value)
+
+  defp serialize_value(%{} = map) do
+    Map.new(map, fn {key, value} -> {key, serialize_value(value)} end)
+  end
+
+  defp serialize_value(list) when is_list(list) do
+    Enum.map(list, &serialize_value/1)
+  end
+
+  defp serialize_value(value), do: value
 
   defp maybe_filter_active(query, opts) do
     case Keyword.fetch(opts, :is_active) do

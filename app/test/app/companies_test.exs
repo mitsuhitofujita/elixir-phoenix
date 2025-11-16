@@ -90,6 +90,23 @@ defmodule App.CompaniesTest do
       refute inactive.id == company.id
       refute inactive.is_active
     end
+
+    test "serializes complex types for audit logs" do
+      attrs =
+        valid_company_attributes(%{
+          capital_amount: "12345.67",
+          founded_at: ~D[2022-01-02],
+          established_at: ~D[2022-03-04]
+        })
+
+      assert {:ok, %{audit_log: %AuditLog{} = audit_log}} = Companies.create_company(attrs)
+
+      assert audit_log.changed_data["capital_amount"] == "12345.67"
+      assert audit_log.changed_data["founded_at"] == "2022-01-02"
+      assert audit_log.changed_data["established_at"] == "2022-03-04"
+      assert is_binary(audit_log.changed_data["created_at"])
+      assert is_binary(audit_log.changed_data["updated_at"])
+    end
   end
 
   describe "update_company/2" do
