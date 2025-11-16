@@ -5,7 +5,7 @@ defmodule App.Repo.Migrations.CreateCompanies do
     create table(:companies) do
       add :name, :text, null: false
       add :code, :text, null: false
-      add :capital_amount, :numeric
+      add :capital_amount, :bigint
       add :founded_at, :date
       add :established_at, :date
       add :is_active, :boolean, null: false, default: true

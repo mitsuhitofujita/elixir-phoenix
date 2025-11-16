@@ -33,7 +33,14 @@ defmodule AppWeb.CompanyLive.FormComponent do
         <div class="grid gap-4 md:grid-cols-2">
           <.input field={f[:name]} label="Name" />
           <.input field={f[:code]} label="Code" />
-          <.input field={f[:capital_amount]} label="Capital amount" type="number" step="0.01" />
+          <.input
+            field={f[:capital_amount]}
+            label="Capital amount (JPY)"
+            type="number"
+            step="1"
+            min="0"
+            inputmode="numeric"
+          />
           <.input field={f[:is_active]} type="checkbox" label="Active company" />
           <.input field={f[:founded_at]} label="Founded at" type="date" />
           <.input field={f[:established_at]} label="Established at" type="date" />

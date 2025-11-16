@@ -12,7 +12,7 @@ defmodule App.Companies.Company do
   schema "companies" do
     field :name, :string
     field :code, :string
-    field :capital_amount, :decimal
+    field :capital_amount, :integer
     field :founded_at, :date
     field :established_at, :date
     field :is_active, :boolean, default: true

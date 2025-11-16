@@ -17,7 +17,7 @@ defmodule App.CompaniesFixtures do
     Enum.into(attrs, %{
       name: unique_company_name(),
       code: unique_company_code(),
-      capital_amount: Decimal.new("100000.00"),
+      capital_amount: 100_000,
       founded_at: ~D[2010-01-01],
       established_at: ~D[2010-02-01],
       is_active: true

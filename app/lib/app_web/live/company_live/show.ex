@@ -6,7 +6,6 @@ defmodule AppWeb.CompanyLive.Show do
 
   alias App.Companies
   alias AppWeb.CompanyLive.FormComponent
-  alias Decimal
 
   @impl true
   def mount(_params, _session, socket) do
@@ -220,5 +219,5 @@ defmodule AppWeb.CompanyLive.Show do
 
   defp format_capital(nil), do: "Not provided"
 
-  defp format_capital(amount), do: "¥" <> Decimal.to_string(amount, :normal)
+  defp format_capital(amount) when is_integer(amount), do: "¥" <> Integer.to_string(amount)
 end

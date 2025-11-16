@@ -7,7 +7,6 @@ defmodule AppWeb.CompanyLive.Index do
   alias App.Companies
   alias App.Companies.Company
   alias AppWeb.CompanyLive.FormComponent
-  alias Decimal
 
   @impl true
   def mount(_params, _session, socket) do
@@ -256,9 +255,7 @@ defmodule AppWeb.CompanyLive.Index do
 
   defp format_capital(nil), do: "Not provided"
 
-  defp format_capital(capital) do
-    "¥" <> Decimal.to_string(capital, :normal)
-  end
+  defp format_capital(capital) when is_integer(capital), do: "¥" <> Integer.to_string(capital)
 
   defp filter_patch(filter), do: ~p"/companies?filter=#{filter}"
 end
