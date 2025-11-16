@@ -3,8 +3,6 @@ services:
   elixir:
     build: ./services/elixir
     command: sleep infinity
-    environment:
-      MIX_ENV: dev
     depends_on:
       - postgres
     volumes:

@@ -8,10 +8,25 @@ defmodule App.MixProject do
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      preferred_cli_env: [
+        test: :test,
+        precommit: :test,
+        ci: :test
+      ],
       aliases: aliases(),
       deps: deps(),
       compilers: [:phoenix_live_view] ++ Mix.compilers(),
       listeners: [Phoenix.CodeReloader]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
+        test: :test,
+        precommit: :test,
+        ci: :test
+      ]
     ]
   end
 
@@ -22,12 +37,6 @@ defmodule App.MixProject do
     [
       mod: {App.Application, []},
       extra_applications: [:logger, :runtime_tools]
-    ]
-  end
-
-  def cli do
-    [
-      preferred_envs: [precommit: :test]
     ]
   end
 
