@@ -1,4 +1,5 @@
 defmodule App.Accounts.UserToken do
+  @moduledoc "Token helpers used for session, magic link, and change email flows."
   use Ecto.Schema
   import Ecto.Query
   alias App.Accounts.UserToken

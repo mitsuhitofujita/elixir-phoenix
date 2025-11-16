@@ -1,4 +1,5 @@
 defmodule App.Accounts.User do
+  @moduledoc "User schema along with registration and credential changesets."
   use Ecto.Schema
   import Ecto.Changeset
 

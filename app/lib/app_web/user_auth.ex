@@ -1,4 +1,5 @@
 defmodule AppWeb.UserAuth do
+  @moduledoc "Authentication helpers for managing web sessions and remember-me cookies."
   use AppWeb, :verified_routes
 
   import Plug.Conn

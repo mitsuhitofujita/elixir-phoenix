@@ -1,8 +1,9 @@
 defmodule App.Accounts.UserNotifier do
+  @moduledoc "Delivers user-facing notification emails for account flows."
   import Swoosh.Email
 
-  alias App.Mailer
   alias App.Accounts.User
+  alias App.Mailer
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
