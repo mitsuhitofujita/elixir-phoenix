@@ -35,30 +35,34 @@ defmodule AppWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
+    <header class="navbar px-4 sm:px-6 lg:px-8 gap-6">
       <div class="flex-1">
-        <a href="/" class="flex-1 flex w-fit items-center gap-2">
+        <.link href={~p"/"} class="flex-1 flex w-fit items-center gap-2">
           <img src={~p"/images/logo.svg"} width="36" />
-          <span class="text-sm font-semibold">v{Application.spec(:phoenix, :vsn)}</span>
-        </a>
+          <div class="text-left">
+            <p class="text-xs uppercase tracking-wide text-base-content/60">Attendance</p>
+            <p class="text-sm font-semibold text-base-content">Control Center</p>
+          </div>
+        </.link>
       </div>
-      <div class="flex-none">
-        <ul class="flex flex-column px-1 space-x-4 items-center">
-          <li>
-            <a href="https://phoenixframework.org/" class="btn btn-ghost">Website</a>
-          </li>
-          <li>
-            <a href="https://github.com/phoenixframework/phoenix" class="btn btn-ghost">GitHub</a>
-          </li>
-          <li>
-            <.theme_toggle />
-          </li>
-          <li>
-            <a href="https://hexdocs.pm/phoenix/overview.html" class="btn btn-primary">
-              Get Started <span aria-hidden="true">&rarr;</span>
-            </a>
-          </li>
-        </ul>
+      <div class="flex-none flex items-center gap-4">
+        <%= if @current_scope do %>
+          <nav class="flex items-center gap-2">
+            <.link
+              href={~p"/companies"}
+              class="btn btn-ghost btn-sm rounded-full border border-transparent hover:border-base-300"
+            >
+              Companies
+            </.link>
+            <.link
+              href={~p"/audit-logs"}
+              class="btn btn-ghost btn-sm rounded-full border border-transparent hover:border-base-300"
+            >
+              Audit logs
+            </.link>
+          </nav>
+        <% end %>
+        <.theme_toggle />
       </div>
     </header>
 

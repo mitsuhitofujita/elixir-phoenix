@@ -3,10 +3,12 @@ defmodule AppWeb.UserAuth do
   use AppWeb, :verified_routes
 
   import Plug.Conn
+  import Phoenix.Component, only: [assign_new: 3]
   import Phoenix.Controller
 
   alias App.Accounts
   alias App.Accounts.Scope
+  alias Phoenix.LiveView
 
   # Make the remember me cookie valid for 14 days. This should match
   # the session validity setting in UserToken.
@@ -165,6 +167,40 @@ defmodule AppWeb.UserAuth do
 
   defp put_token_in_session(conn, token) do
     put_session(conn, :user_token, token)
+  end
+
+  @doc """
+  LiveView `on_mount/4` callback for wiring the current scope and enforcing authentication.
+
+  Use the `:mount_current_scope` action to simply assign the scope, or `:ensure_authenticated`
+  to both assign and guarantee a signed-in user is present.
+  """
+  def on_mount(:mount_current_scope, _params, session, socket) do
+    {:cont, mount_current_scope(socket, session)}
+  end
+
+  def on_mount(:ensure_authenticated, _params, session, socket) do
+    socket = mount_current_scope(socket, session)
+
+    if socket.assigns.current_scope && socket.assigns.current_scope.user do
+      {:cont, socket}
+    else
+      {:halt,
+       socket
+       |> LiveView.put_flash(:error, "You must log in to access this page.")
+       |> LiveView.redirect(to: ~p"/users/log-in")}
+    end
+  end
+
+  defp mount_current_scope(socket, session) do
+    assign_new(socket, :current_scope, fn ->
+      with token when is_binary(token) <- session["user_token"],
+           {user, _} <- Accounts.get_user_by_session_token(token) do
+        Scope.for_user(user)
+      else
+        _ -> nil
+      end
+    end)
   end
 
   @doc """

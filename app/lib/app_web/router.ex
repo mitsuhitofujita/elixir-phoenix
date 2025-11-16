@@ -23,6 +23,22 @@ defmodule AppWeb.Router do
     get "/", PageController, :home
   end
 
+  scope "/", AppWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :require_authenticated_scope,
+      on_mount: [{AppWeb.UserAuth, :ensure_authenticated}] do
+      live "/companies", CompanyLive.Index, :index
+      live "/companies/new", CompanyLive.Index, :new
+      live "/companies/:id/edit", CompanyLive.Index, :edit
+
+      live "/companies/:id", CompanyLive.Show, :show
+      live "/companies/:id/show/edit", CompanyLive.Show, :edit
+
+      live "/audit-logs", AuditLogLive.Index, :index
+    end
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", AppWeb do
   #   pipe_through :api
