@@ -5,7 +5,8 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         git \
         inotify-tools \
-        libpq-dev
+        libpq-dev \
+        ripgrep
 RUN curl -fsSL https://deb.nodesource.com/setup_24.x | bash - && \
     apt-get install -y nodejs
 RUN rm -rf /var/lib/apt/lists/* && \
