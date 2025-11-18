@@ -31,27 +31,29 @@ defmodule App.CompaniesTest do
   end
 
   describe "change_company/2" do
-    test "returns a changeset" do
+    test "returns a populated changeset" do
       company = company_fixture()
-      assert %Ecto.Changeset{} = Companies.change_company(company)
+      attrs = %{name: "Updated via changeset"}
+
+      assert %Ecto.Changeset{data: ^company, changes: %{name: "Updated via changeset"}} =
+               Companies.change_company(company, attrs)
     end
   end
 
   describe "create_company/1" do
-    test "creates a company and audit log" do
+    test "persists the company and accompanying audit log payload" do
       attrs = valid_company_attributes()
+
+      assert Repo.aggregate(AuditLog, :count, :id) == 0
 
       assert {:ok, %{company: %Company{} = company, audit_log: %AuditLog{} = audit_log}} =
                Companies.create_company(attrs)
 
-      assert audit_log.action == "create"
-      assert audit_log.entity == "company"
-      assert audit_log.entity_id == company.id
-      assert audit_log.changed_data["id"] == company.id
-      assert audit_log.changed_data["name"] == company.name
+      assert Repo.aggregate(AuditLog, :count, :id) == 1
+      assert_audit_log_fields("create", company, audit_log)
     end
 
-    test "returns error changeset without audit logs" do
+    test "returns an error changeset without inserting audit logs" do
       assert {:error, :company, %Ecto.Changeset{} = changeset, _} =
                Companies.create_company(%{name: "Missing code"})
 
@@ -80,7 +82,7 @@ defmodule App.CompaniesTest do
       assert "has already been taken" in errors_on(changeset).code
     end
 
-    test "allows duplicate codes when new company is inactive" do
+    test "allows duplicate codes when the new company is inactive" do
       company = company_fixture()
 
       assert {:ok, %{company: %Company{} = inactive}} =
@@ -110,7 +112,7 @@ defmodule App.CompaniesTest do
   end
 
   describe "update_company/2" do
-    test "updates the company and writes audit logs" do
+    test "updates a company and records the new snapshot" do
       company = company_fixture()
       Repo.delete_all(AuditLog)
 
@@ -118,11 +120,11 @@ defmodule App.CompaniesTest do
                Companies.update_company(company, %{name: "Updated Name"})
 
       assert updated.name == "Updated Name"
-      assert audit_log.action == "update"
-      assert audit_log.changed_data["name"] == "Updated Name"
+      assert Repo.aggregate(AuditLog, :count, :id) == 1
+      assert_audit_log_fields("update", updated, audit_log)
     end
 
-    test "returns error changeset and does not create audit logs" do
+    test "returns an error tuple without recording audit logs" do
       company = company_fixture()
       Repo.delete_all(AuditLog)
 
@@ -134,19 +136,41 @@ defmodule App.CompaniesTest do
   end
 
   describe "delete_company/1" do
-    test "deletes the company and writes audit logs" do
+    test "removes the record and persists a delete audit log" do
       company = company_fixture()
       Repo.delete_all(AuditLog)
 
-      assert {:ok, %{company: %Company{}, audit_log: %AuditLog{} = audit_log}} =
+      assert {:ok, %{company: %Company{} = deleted, audit_log: %AuditLog{} = audit_log}} =
                Companies.delete_company(company)
 
-      assert audit_log.action == "delete"
-      assert audit_log.changed_data["id"] == company.id
+      assert Repo.aggregate(AuditLog, :count, :id) == 1
+      assert_audit_log_fields("delete", deleted, audit_log)
 
       assert_raise Ecto.NoResultsError, fn ->
         Companies.get_company!(company.id)
       end
     end
   end
+
+  defp assert_audit_log_fields(expected_action, %Company{} = company, %AuditLog{} = audit_log) do
+    assert audit_log.action == expected_action
+    assert audit_log.entity == "company"
+    assert audit_log.entity_id == company.id
+    assert %DateTime{} = audit_log.created_at
+    assert audit_log.changed_data == serialize_company(company)
+  end
+
+  defp serialize_company(%Company{} = company) do
+    company
+    |> Map.from_struct()
+    |> Map.drop([:__meta__, :__struct__])
+    |> Enum.map(fn {key, value} -> {Atom.to_string(key), serialize_value(value)} end)
+    |> Map.new()
+  end
+
+  defp serialize_value(%Date{} = date), do: Date.to_iso8601(date)
+  defp serialize_value(%NaiveDateTime{} = datetime), do: NaiveDateTime.to_iso8601(datetime)
+  defp serialize_value(%DateTime{} = datetime), do: DateTime.to_iso8601(datetime)
+  defp serialize_value(%Time{} = time), do: Time.to_iso8601(time)
+  defp serialize_value(value), do: value
 end
