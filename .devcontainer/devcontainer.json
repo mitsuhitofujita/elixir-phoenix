@@ -5,7 +5,6 @@
 	],
 	"service": "elixir",
 	"features": {
-		"./features/codex": {}
 	},
 	"remoteUser": "vscode",
 	"workspaceFolder": "/workspace",
